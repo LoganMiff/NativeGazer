@@ -21,6 +21,7 @@ export default function Gazer( {
     const device = useCameraDevice(cameraType);
     const { hasPermission, requestPermission } = useCameraPermission();
     const jsGazeAction = useRunOnJS(gazeAction);
+    
     let eyetracker = useFrameProcessor((frame) => {
         'worklet';
 
