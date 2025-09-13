@@ -32,7 +32,7 @@ export default function Gazer( {
         callbacks.onResults,
         callbacks.onError, 
         'LIVE_STREAM', 
-        'face_landmarking.task', 
+        'face_landmarking.task'/*, 
         {
             numFaces: 1,
             minFaceDetectionConfidence: 0.5,
@@ -43,7 +43,7 @@ export default function Gazer( {
             mirrorMode: 'mirror-front-only',
             forceOutputOrientation: 'portrait',
             forceCameraOrientation: 'portrait'
-    });
+    }*/);
 
     //Gaze Dot Location
     const [ xCoord, setX ] = useState(0);
