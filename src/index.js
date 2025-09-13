@@ -57,7 +57,7 @@ export default function Gazer( {
             { (device) ? 
             <Camera 
                 device={device}
-                //onLayout={test.cameraViewLayoutChangeHandler}
+                onLayout={eyetracker.cameraViewLayoutChangeHandler}
                 frameProcessor={eyetracker.frameProcessor}
                 frameProcessorFps={30}
                 isActive={!isPaused}
