@@ -3,7 +3,7 @@ import  { Camera,
           useCameraDevice, 
           useCameraPermission
         } from "react-native-vision-camera";
-        
+
 import { useFaceLandmarkDetection } from "react-native-mediapipe";
 
 import GazeDot from "./components/GazeDot";
@@ -28,16 +28,21 @@ export default function Gazer( {
         },
     };
     
-    const eyetracker = useFaceLandmarkDetection(callbacks, 'LIVE_STREAM', 'face_landmarking.task', {
-        numFaces: 1,
-        minFaceDetectionConfidence: 0.5,
-        minFacePresenceConfidence: 0.5,
-        minTrackingConfidence: 0.5,
-        shouldOutputSegmentationMasks: false,
-        delegate: 'GPU',
-        mirrorMode: 'mirror-front-only',
-        forceOutputOrientation: 'portrait',
-        forceCameraOrientation: 'portrait'
+    const eyetracker = useFaceLandmarkDetection(
+        callbacks.onResults,
+        callbacks.onError, 
+        'LIVE_STREAM', 
+        'face_landmarking.task', 
+        {
+            numFaces: 1,
+            minFaceDetectionConfidence: 0.5,
+            minFacePresenceConfidence: 0.5,
+            minTrackingConfidence: 0.5,
+            shouldOutputSegmentationMasks: false,
+            delegate: 'GPU',
+            mirrorMode: 'mirror-front-only',
+            forceOutputOrientation: 'portrait',
+            forceCameraOrientation: 'portrait'
     });
 
     //Gaze Dot Location
