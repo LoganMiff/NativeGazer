@@ -4,6 +4,7 @@ import  { Camera,
           useCameraDevice, 
           useCameraPermission
         } from "react-native-vision-camera";
+import { useFaceLandmarkDetection } from "react-native-mediapipe";
 
 import { useRunOnJS } from "react-native-worklets-core";
 
@@ -21,7 +22,31 @@ export default function Gazer( {
     const device = useCameraDevice(cameraType);
     const { hasPermission, requestPermission } = useCameraPermission();
     const jsGazeAction = useRunOnJS(gazeAction);
+
+    const callbacks = {
+        onResults: (results) => {
+            console.log('Face Landmarking results:', results);
+        },
+        onError: (error) => {
+            console.error('Face Landmarking error:', error);
+        },
+    };
     
+    let test = useFaceLandmarkDetection(callbacks, 'LIVE_STREAM', 'face_landmarking.task', {
+        numFaces: 1,
+        minFaceDetectionConfidence: 0.5,
+        minFacePresenceConfidence: 0.5,
+        minTrackingConfidence: 0.5,
+        shouldOutputSegmentationMasks: false,
+        delegate: 'GPU',
+        mirrorMode: 'mirror-front-only',
+        forceOutputOrientation: 'portrait',
+        forceCameraOrientation: 'portrait',
+        fpsMode: 30
+    });
+
+    test.cameraDeviceChangeHandler()
+
     let eyetracker = useFrameProcessor((frame) => {
         'worklet';
 
@@ -40,7 +65,9 @@ export default function Gazer( {
             { (device) ? 
             <Camera 
                 device={device}
+                onLayout={test.cameraViewLayoutChangeHandler}
                 frameProcessor={eyetracker}
+                frameProcessorFps={test.fpsMode}
                 isActive={!isPaused}
             /> :
             <Text>Camera Device not loaded...</Text>
