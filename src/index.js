@@ -23,6 +23,7 @@ export default function Gazer( {
     const { hasPermission, requestPermission } = useCameraPermission();
     const jsGazeAction = useRunOnJS(gazeAction);
 
+    /*
     const callbacks = {
         onResults: (results) => {
             console.log('Face Landmarking results:', results);
@@ -44,14 +45,13 @@ export default function Gazer( {
         forceCameraOrientation: 'portrait',
         fpsMode: 30
     });
-
-    test.cameraDeviceChangeHandler()
+    */
 
     let eyetracker = useFrameProcessor((frame) => {
         'worklet';
 
         jsGazeAction({x: 1, y: 2, data: "Testing"}, 1000);
-    }, [gazeAction]);
+    }, [jsGazeAction]);
 
     //Gaze Dot Location
     const [ xCoord, setX ] = useState(0);
@@ -65,9 +65,9 @@ export default function Gazer( {
             { (device) ? 
             <Camera 
                 device={device}
-                onLayout={test.cameraViewLayoutChangeHandler}
+                //onLayout={test.cameraViewLayoutChangeHandler}
                 frameProcessor={eyetracker}
-                frameProcessorFps={test.fpsMode}
+                frameProcessorFps={30}
                 isActive={!isPaused}
             /> :
             <Text>Camera Device not loaded...</Text>
