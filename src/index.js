@@ -1,12 +1,10 @@
 import  { Button, View } from "react-native";
 import  { Camera, 
-          useFrameProcessor, 
           useCameraDevice, 
           useCameraPermission
         } from "react-native-vision-camera";
+        
 import { useFaceLandmarkDetection } from "react-native-mediapipe";
-
-import { useRunOnJS } from "react-native-worklets-core";
 
 import GazeDot from "./components/GazeDot";
 import { useState } from "react";
@@ -15,15 +13,12 @@ export default function Gazer( {
     gazeAction = (gazeData, elapsedTime) => {}, 
     isPaused = false, 
     showGazeDot = true, 
-    storePastPoints = true,
     cameraType = 'front'
 }) {
     //Vision Camera
     const device = useCameraDevice(cameraType);
     const { hasPermission, requestPermission } = useCameraPermission();
-    const jsGazeAction = useRunOnJS(gazeAction);
 
-    /*
     const callbacks = {
         onResults: (results) => {
             console.log('Face Landmarking results:', results);
@@ -33,7 +28,7 @@ export default function Gazer( {
         },
     };
     
-    let test = useFaceLandmarkDetection(callbacks, 'LIVE_STREAM', 'face_landmarking.task', {
+    const eyetracker = useFaceLandmarkDetection(callbacks, 'LIVE_STREAM', 'face_landmarking.task', {
         numFaces: 1,
         minFaceDetectionConfidence: 0.5,
         minFacePresenceConfidence: 0.5,
@@ -42,16 +37,8 @@ export default function Gazer( {
         delegate: 'GPU',
         mirrorMode: 'mirror-front-only',
         forceOutputOrientation: 'portrait',
-        forceCameraOrientation: 'portrait',
-        fpsMode: 30
+        forceCameraOrientation: 'portrait'
     });
-    */
-
-    let eyetracker = useFrameProcessor((frame) => {
-        'worklet';
-
-        jsGazeAction({x: 1, y: 2, data: "Testing"}, 1000);
-    }, [jsGazeAction]);
 
     //Gaze Dot Location
     const [ xCoord, setX ] = useState(0);
@@ -66,7 +53,7 @@ export default function Gazer( {
             <Camera 
                 device={device}
                 //onLayout={test.cameraViewLayoutChangeHandler}
-                frameProcessor={eyetracker}
+                frameProcessor={eyetracker.frameProcessor}
                 frameProcessorFps={30}
                 isActive={!isPaused}
             /> :
